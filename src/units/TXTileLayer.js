@@ -1,4 +1,6 @@
 import L from 'leaflet'
+import icon from '../assets/distance.png'
+import iconShadow from 'leaflet/dist/images/marker-shadow.png'
 
 export default {
   data () {
@@ -15,7 +17,8 @@ export default {
       DRAWPOLYLINEPOINTS: [], // 绘制的折线的节点集
       DRAWPOLYGON: null, // 绘制的面
       DRAWMOVEPOLYGON: null, // 绘制过程中的面
-      DRAWPOLYGONPOINTS: [] // 绘制的面的节点集
+      DRAWPOLYGONPOINTS: [], // 绘制的面的节点集
+      marker: null
     }
   },
   methods: {
@@ -56,17 +59,31 @@ export default {
         if (_this.DRAWING) { // 是否正在绘制
           if (_this.DRAWMOVEPOLYLINE !== undefined && _this.DRAWMOVEPOLYLINE != null) { // 绘制过程中的折线
             _this.map.removeLayer(_this.DRAWMOVEPOLYLINE)
+            _this.marker.remove(_this.map)
           }
           var prevPoint = _this.DRAWPOLYLINEPOINTS[_this.DRAWPOLYLINEPOINTS.length - 1]
           _this.DRAWMOVEPOLYLINE = new L.Polyline([prevPoint, e.latlng], shapeOptions)
           _this.map.addLayer(_this.DRAWMOVEPOLYLINE)
           if (_this.ISMEASURE) {
             var distance = _this.MEASURERESULT + e.latlng.distanceTo(_this.DRAWPOLYLINEPOINTS[_this.DRAWPOLYLINEPOINTS.length - 1])
-            _this.MEASURETOOLTIP.updatePosition(e.latlng) // 量距提示
-            _this.MEASURETOOLTIP.updateContent({
-              text: '单击确定点，双击结束！',
-              subtext: '总长：' + (distance / 1000).toFixed(2) + '公里'
+            _this.marker = L.marker(e.latlng, {
+              icon: L.icon({
+                iconUrl: icon,
+                iconSize: [40, 40],
+                iconAnchor: [40, 40],
+                popupAnchor: [-3, -76],
+                shadowUrl: iconShadow,
+                shadowSize: [68, 95],
+                shadowAnchor: [22, 94]
+              })
             })
+            _this.marker.addTo(_this.map)
+              .bindTooltip('总长：' + (distance / 1000).toFixed(2) + '公里', {
+                permanent: true,
+                offset: [20, 28], // 偏移
+                direction: 'bottom', // 放置位置
+                className: 'anim-tooltip' // CSS控制
+              }).openTooltip()
           }
         }
       }
@@ -86,6 +103,10 @@ export default {
           _this.map.off('dblclick')
         }
       }
+    },
+    clearAll () {
+      this.map.removeLayer(this.DRAWPOLYLINE)
+      this.map.removeLayer(this.marker)
     }
   }
 }

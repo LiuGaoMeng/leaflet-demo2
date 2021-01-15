@@ -2,6 +2,7 @@
   <div>
     <div class="tool">
       <el-button @click="startDraw">测距</el-button>
+      <el-button @click="clear">清空</el-button>
     </div>
     <div id="map"></div>
   </div>
@@ -33,6 +34,9 @@ export default {
     },
     startDraw () {
       this.startDrawLine()
+    },
+    clear () {
+      this.clearAll()
     }
   },
   mounted () {
@@ -46,8 +50,8 @@ export default {
   height: 100vh;
 }
 .tool {
-    display: inline-block;
-    float: left;
-    margin-left: 50px;
+  display: inline-block;
+  float: left;
+  margin-left: 50px;
 }
 </style>
