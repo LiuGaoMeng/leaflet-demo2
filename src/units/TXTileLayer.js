@@ -9,15 +9,10 @@ export default {
       BarDRAWLAYERS: [],
       DRAWING: false,
       ISMEASURE: false, // 是否是量距
-      MEASURETOOLTIP: null, // 量距提示
-      MEASUREAREATOOLTIP: null, // 量面提示
       MEASURERESULT: 0, // 测量结果
       DRAWPOLYLINE: null, // 绘制的折线
       DRAWMOVEPOLYLINE: null, // 绘制过程中的折线
       DRAWPOLYLINEPOINTS: [], // 绘制的折线的节点集
-      DRAWPOLYGON: null, // 绘制的面
-      DRAWMOVEPOLYGON: null, // 绘制过程中的面
-      DRAWPOLYGONPOINTS: [], // 绘制的面的节点集
       marker: null
     }
   },
@@ -45,9 +40,6 @@ export default {
       this.map.on('dblclick', onDoubleClick)
       function onClick (e) {
         _this.DRAWING = true // 是否正在绘制
-        if (_this.ISMEASURE) { // 是否是量距
-          _this.MEASURETOOLTIP = new L.Tooltip(_this.map) // 量距提示
-        }
         _this.DRAWPOLYLINEPOINTS.push(e.latlng)
         if (_this.DRAWPOLYLINEPOINTS.length > 1 && _this.ISMEASURE) { // 是否是量距
           _this.MEASURERESULT += e.latlng.distanceTo(_this.DRAWPOLYLINEPOINTS[_this.DRAWPOLYLINEPOINTS.length - 2])
